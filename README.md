@@ -1,6 +1,6 @@
 # Opportunity Trigger SFDC
 
-TRIGGER 1
+TRIGGER 1 ##
 "public void OnBeforeInsert(Opportunity[] newOpportunities, Map<ID, Opportunity> newOpportunityMap){
 validateReqFields(null,new Opportunities);
 //populateMarketing Campaign(new Opportunities);
