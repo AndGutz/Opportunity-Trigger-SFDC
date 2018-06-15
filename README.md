@@ -10,6 +10,7 @@ populateOpportunityCustomerField(null, new Opportunities);
 copyFieldsFromOpptyPrimaryContact(newOpportunities, null);"
 
 TRIGGER 2
+
 "public void OnBeforeUpdate(Map<ID, Opportunity> oldOpportunityMap, Opportunity[] newOpportunities, Map<ID, Opportunity> newOpportunityMap){
 validateReqFields(oldOpportunityMap, new Opportunities);
 calculateOpportunityFields(oldOpportunityMap, newOpportunities);
@@ -19,6 +20,7 @@ copyFieldsFromOpptyPrimaryContact(newOpportunities, oldOpportunityMap);
 populateNextStepsHistory(oldOpportunityMap, newOpportunities);"
 
 TRIGGER 3
+
 "public void OnAfterInsert(Map<ID, Opportunity> newOpportunityMap){
 /*if(newOpportunityMap.size() == 1){
 checkOpportunityClosed(null, newOpportunityMap.values()[0]);
@@ -29,6 +31,7 @@ createOppContactRoles('insert', newOpportunity Map, null);
 rollUpValuesToParentOpportunity(null, newOpportunityMap);"
 
 TRIGGER 4
+
 "public void OnAfterUpdate(Opportunity[] or Opportunities, Opportunity[] updated Opportunities, Map<ID, Opportunity> oldOpportunityMap, Map<ID, Opportunity> newOpportunityMap){
 if(firstRun){
 firstRun = false;
@@ -78,6 +81,7 @@ opp.Previous_Next_Steps__c = oldOpp.Next_Steps__c;
 opp.Next_Steps_History__c = (opp.Next_Steps_History__c!=null && opp.Next_Steps_History__c!='') ? opp.Next_Steps_History__c + '\n' + oldOpp.Next_Steps__c : oldOpp.Next_Steps__c;"
 
 TRIGGER 6
+
 "/*// autopopulate Marketing Campaign field depending on the Opportunity Primary Contact's Marketing Campaign field
 public void populateMarketingCampaign(Opportunity[] newOpportunities){
 Set<Id> contactIdSet = new Set<Id>();
@@ -86,6 +90,7 @@ if (opp.Opportunity_Primary_Contact__c!=null){
 contactIdSet.add(opp.Opportunity_Primary_Contact__c);"
   
 TRIGGER 7
+
 "Map<Id,Contact> contactIdContactMap = new Map<Id,Contact>([select Id, Marketing_Campaign__c from Contact where Id IN: contactIdSet]);
 
 for (Opportunity opp : newOpportunities){
@@ -93,6 +98,7 @@ if (opp.Opportunity_Primary_Contact__c!=null && contactIdContactMap.containsKey(
 if (opp.Marketing_Campaign__c==null) opp.Marketing_Campaign__c = contactIdContactMap.get(opp.Opportunity_Primary_Contact__c).Marketing_Campaign__c;"
 
 TRIGGER 8
+
 "public void calculateOpportunityFields(Map<ID, Opportunity> oldOpportunityMap, Opportunity[] newOpportunities){
 Set<Id> oppClosedWonIdSet = new Set<Id>();
 for (Opportunity opp : newOpportunities){
@@ -119,6 +125,7 @@ else if (opp.Product__c == 'Hybrid Commitment')
 opp.Net_Revenue_Account_Roll_Up__c = opp.Child_Opportunities_Net_Revenue__c;"
 
 TRIGGER 9
+
 "make signature date field on Order level required if platfom != Unified Application
 public void validateReqFields(Map<ID, Opportunity> oldOpportunityMap, Opportunity[] newOpportunities){
 
@@ -145,11 +152,13 @@ if (opp.RecordTypeId==Constants.opptyAdvertisingRecType &&
 (opp.New_Amount__c==null || opp.New_Amount__c==0)) opp.New_Amount__c.addError('Please input value here.');"
 
 TRIGGER 10
+
 "if (opp.StageName!='Discovery' &&
 opp.RecordTypeId == Constants.opptyCommitment2RecType){
 if (opp.Product__c==null || opp.Product__c=='') opp.Product__c.addError('Product Is required to move a commitment opportunity past the Discovery Stage.');"
 
 TRIGGER 11
+
 "if (opp.StageName!='Discovery' &&
 opp.StageName!='Inbound Prospecting' &&
 opp.StageName!='Outbound Prospecting' &&
@@ -161,11 +170,13 @@ opp.New_Existing_Account__c==null || opp.New_Existing_Account__c==''){
 opp.addError('Deal Description, Next Steps, Opportunity Primary contact and New / Existing Account are required to move an Opportunity past the Discovery stage');"
 
 TRIGGER 12
+
 "/*if (opp.StageName!='Closed Lost' &&
 opp.Opportunity_Category__c!=null && opp.Opportunity_Category__c=='Lead'){
 opp.addError('Opportunity Category can not be equal to Lead if the Opportunity Stage is not equal to Inbound Prospecting, Outbound Prospecting Or Discovery');"
 
 TRIGGER 13
+
 "if (opp.Opportunity_Primary_Contact__c==null && opp.RecordTypeId != Constants.opptyCommitment2RecType) opp.Opportunity_Primary_Contact__c.addError('Please input value here.');
 
 // BOSP-575
@@ -176,22 +187,26 @@ if (opp.Opportunity_Type__c!=null && opp.Opportunity_Type__c=='New Sale' && (opp
 if (opp.Customer_Success_Manager__c==null) opp.Customer_Success_Manager__c.addError('A Customer Success Manager is required before the Opportunity Stage can be updated to Redlines or Legal Review');"
 
 TRIGGER 14
+
 "/*if (opp.Opportunity_Type__c!=null && opp.Opportunity_Type__c=='New Sale' && opp.StageName=='Closed Won'){
 if (opp.Customer_Success_Manager__c==null) opp.Customer_Success_Manager__c.addError('Customer Success Manager is required.');
 if (opp.Project_Manager__c==null) opp.Project_Manager__c.addError('Project Manager is required.');
 if (opp.Customer_Experience_Manager__c==null) opp.Customer_Experience_Manager__c.addError('Customer Experience Manager is required.');"
 
 TRIGGER 16
+
 "if (oldOpp!=null && oldOpp.StageName != opp.StageName){
 if (oldOpp.StageName == 'Best Case' && opp.StageName != 'Best Case Closed') opp.addError('Best Case Opportunity can only be updated to Best Case Closed stage');
 if (oldOpp.StageName == 'Best Case Closed' && opp.StageName != 'Best Case') opp.addError('Best Case Closed Opportunity can only be updated to Best Case stage');"
 
 TRIGGER 17
+
 "//if ((oldOpp!=null && oldOpp.StageName != opp.StageName && opp.StageName == 'Closed Won' && opp.Product__c == 'Advertising Commitment')){
 //if (opp.Customer_Success_Manager__c==null) opp.Customer_Success_Manager__c.addError('Please input value here.');
 //}"
 
 TRIGGER 18
+
 "if (oldOpp!=null && oldOpp.StageName != opp.StageName &&
 opp.StageName == 'Closed Won' &&
 opp.Product__c == 'Advertising Commitment' &&
@@ -199,6 +214,7 @@ opp.RecordTypeId==Constants.opptyCommitmentRecType){
 if (opp.Customer_Success_Manager__c==null) opp.Customer_Success_Manager__c.addError('Customer Success Manager is required to set a Hybrid Opportunity Closed Won.');"
 
 TRIGGER 19
+
 "// BOSP-534
 if (oldOpp!=null && oldOpp.StageName != opp.StageName &&
 opp.StageName == 'Closed Won' &&
@@ -211,6 +227,7 @@ if (opp.Project_Manager__c==null) opp.Project_Manager__c.addError('Project Manag
 if (opp.Customer_Success_Manager__c==null) opp.Customer_Success_Manager__c.addError('Customer Success Manager is required to set this Opportunity to Closed Won.');"
 
 TRIGGER 20
+
 "// autopopulate SBQQ_Contracted for Commitment2 record type
 if (oldOpp!=null && oldOpp.StageName != opp.StageName &&
 opp.StageName == 'Closed Won' &&
@@ -218,16 +235,19 @@ opp.RecordTypeId==Constants.opptyCommitment2RecType){
 opp.SBQQ__Contracted__c = true;"
 
 TRIGGER 21
+
 "if (oldOpp!=null && oldOpp.Acceleration_Lead_Source__c != opp.Acceleration_Lead_Source__c &&
 opp.Acceleration_Lead_Source__c != null){
 opp.Last_Modified_Accelerated_Lead_Source__c = Date.today();"
 
 TRIGGER 26
+
 "for (Opportunity opp : newOpportunities){
 if ( (opp.Closed_Won_Reason__c==null || opp.Closed_Won_Reason__c=='') && opp.StageName=='Closed Won'){
 opp.Closed_Won_Reason__c.addError('Closed Won Reason is required before you can set this Opportunity to Closed Won.');"
 
 TRIGGER 28
+
 "public List<Case> generate3rdPartyDataCase(Map<Id, Opportunity> oldOpportunityMap, Map<Id, Opportunity> newOpportunityMap){
 
 List<Case> newCaseToInsert = new List<Case>();
@@ -270,6 +290,7 @@ tempCase.X3rd_party_partners__c = opp.X3rd_party_partners__c;
 newCaseToInsert.add(tempCase);"
 
 TRIGGER 29
+
 "// BOSP-492 Upload Confirmation Workflow
 if ((oldOppty.StageName != 'Closed Won' &&
 opp.StageName == 'Closed Won' &&
@@ -306,6 +327,7 @@ tempCase.X3rd_party_partners__c = opp.X3rd_party_partners__c;
 newCaseToInsert.add(tempCase);"
 
 TRIGGER 30
+
 "// BOSP-492 Request and Upload Workflow
 if ((oldOppty.StageName != 'Closed Won' &&
 opp.StageName == 'Closed Won' &&
@@ -344,6 +366,7 @@ if (newCaseToInsert.size()>0) return newCaseToInsert;
 else return null;"
 
 TRIGGER 32
+
 "public List<Case> generateProServCase(Map<Id, Opportunity> oldOpportunityMap, Map<Id, Opportunity> newOpportunityMap){
 
 List<Case> newCaseToInsert = new List<Case>();
@@ -377,6 +400,7 @@ if (newCaseToInsert.size()>0) return newCaseToInsert;
 else return null;"
 
 TRIGGER 33
+
 "// BOSP-581
 public List<Case> generateFinanceCommitReviewCase(Map<Id, Opportunity> oldOpportunityMap, Map<Id, Opportunity> newOpportunityMap){
 
@@ -415,6 +439,7 @@ if (newCaseToInsert.size()>0) return newCaseToInsert;
 else return null;"
 
 TRIGGER 34
+
 "// BOSP-586
 public List<Case> generateOpsCommitReviewCase(Map<Id, Opportunity> oldOpportunityMap, Map<Id, Opportunity> newOpportunityMap){
 
@@ -488,6 +513,7 @@ tempCase.Opportunity__c = opp.Id;
 newCaseToInsert.add(tempCase);"
 
 TRIGGER 36
+
 "// CX Team Assignment Case
 if ((opp.StageName!=oldOppty.StageName &&
 opp.StageName=='Redlines or Legal Review' &&
@@ -513,6 +539,7 @@ newCaseToInsert.add(tempCase);
 }"
 
 TRIGGER 37
+
 "// PMO Team Assignment Case
 if ((opp.StageName!=oldOppty.StageName &&
 opp.StageName=='Redlines or Legal Review' &&
@@ -538,6 +565,7 @@ newCaseToInsert.add(tempCase);
 }"
 
 TRIGGER 38
+
 "// CS Team Assignment Case
 if ((opp.StageName!=oldOppty.StageName &&
 opp.StageName=='Contract or Strategy Sent' &&
@@ -569,6 +597,7 @@ else return null;
 }"
 
 TRIGGER 43
+
 "/*public void validateRelatedQuote(Map<Id, Opportunity> oldOpportunityMap, Map<Id, Opportunity> newOpportunityMap){
 Set<Id> oppIdSet = new Set<Id>();
 
@@ -601,6 +630,7 @@ if (!oppWithPrimaryQuoteIdSet.contains(opp.Id)){
 opp.addError('Opportunity must have a related primary Quote with Net Amount greater than 0');"""
 
 TRIGGER 45
+
 "public void updateRelatedQuote(Map<Id, Opportunity> oldOpportunityMap, Map<Id, Opportunity> newOpportunityMap){
 Set<Id> oppIdSet = new Set<Id>();
 
@@ -636,6 +666,7 @@ opp.addError('A Commitment Opportunity\'s Stage cannot be updated to Contract or
 }"""
 
 TRIGGER 47
+
 "public void copyFieldsFromParentToChildOppty(Map<Id, Opportunity> oldOpportunityMap, Map<Id, Opportunity> newOpportunityMap){
 System.debug('copyFieldsFromPArentToChildOppty START');
 
@@ -661,6 +692,7 @@ if (opp.Product__c == 'Hybrid Commitment' && opp.StageName == 'Closed Won'){
 parentHybridOppClosedWonIdSet.add(opp.Id);"
 
 TRIGGER 51
+
 "public void copyFieldsFromOpptyPrimaryContact(List<Opportunity> newOpportunities, Map<ID, Opportunity> oldOpportunityMap){
     // gather all opp primary contacts and its lead source
     Set<Id> contactIdSet = new Set<Id>();
